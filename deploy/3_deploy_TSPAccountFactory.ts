@@ -7,11 +7,15 @@ const deployTSPAccountFactory: DeployFunction = async function (hre: HardhatRunt
   const from = await provider.getSigner().getAddress()
 
   const entrypoint = await hre.deployments.get('EntryPoint')
+  const _gasPrice = await provider.getGasPrice()
+  const maxFeePerGas = _gasPrice.mul(2)
   const ret = await hre.deployments.deploy(
     'TSPAccountFactory', {
       from,
       args: [entrypoint.address],
       gasLimit: 4e8,
+      maxFeePerGas: maxFeePerGas,
+      maxPriorityFeePerGas: maxFeePerGas,
       deterministicDeployment: true
     })
   console.log('==TSPAccountFactory addr=', ret.address)
